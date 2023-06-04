@@ -10,11 +10,11 @@ type Props = {
 
 export function Input({ children, label, defaultValue = '', formtter, setter }: Props){
   let [actualValue, setActualValue] = useState(defaultValue)
-  let [value, setValue] = useState(formtter?.(actualValue) || actualValue)
+  let [value, setValue] = useState(formtter?.(parseInt(actualValue)) || actualValue)
 
   useEffect(() => {
     setActualValue(defaultValue)
-    setValue(formtter?.(defaultValue) || defaultValue)
+    setValue(formtter?.(parseInt(defaultValue)) || defaultValue)
   }, [defaultValue])
 
   return (
@@ -26,7 +26,7 @@ export function Input({ children, label, defaultValue = '', formtter, setter }: 
             value={value} 
             onFocus={() => setValue(actualValue)}
             onBlur={() => {
-              setValue((formtter?.(actualValue) || actualValue).replace(/[^0-9]/g, ''))
+              setValue((formtter?.(parseInt(actualValue)) || actualValue).replace(/[^0-9]/g, ''))
             }} 
             onChange={(e) => {
               setter?.(parseInt(e.target.value.replace(/[^0-9]/g, '')))

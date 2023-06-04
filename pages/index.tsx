@@ -17,8 +17,8 @@ export default function Home() {
         <meta name="description" content="Online Mystery Boxes by HypeDrop: Authentic Products, Fairly Packed" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
-        <script src="/main.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="/main.js" async defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js" async defer></script>
       </Head>
       <main className={`main ${inter.className}`}>
         <div className={'productsContainer bg-red-500'}>

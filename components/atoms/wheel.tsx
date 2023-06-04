@@ -19,12 +19,12 @@ export function Wheel({ item }: Props) {
   useEffect(() => {
     let slider = document.getElementById("rotate");
     console.log(percentage)
-    if(slider){
+    if (slider) {
       console.log("We got the slider .... ")
       slider.style.background = `conic-gradient(
         white 0deg ${(100 - percentage) * 1.80}deg, 
         green ${(100 - percentage) * 1.80}deg 180deg, 
-        green 180deg ${(percentage * 1.80)+180}deg, 
+        green 180deg ${(percentage * 1.80) + 180}deg, 
         white ${percentage * 3.60}deg 360deg)`
     }
   }, [percentage])
@@ -39,30 +39,32 @@ export function Wheel({ item }: Props) {
       setIsSpinning(true)
       rotateSpinner(luckyNumber)
     }
-  }, [ luckyNumber, hasInitiatedSpin ])
+  }, [luckyNumber, hasInitiatedSpin])
 
   const rotateSpinner = (luckyNumber: number) => {
-    let spinnerInterval;
+    let spinnerInterval: any;
     let arrow = document.getElementById("wheel-arrow");
     let degrees = luckyNumber;
     let currentDegree = 0;
     let delay = 10; // Starting delay
 
     const intervalCallback = () => {
-      arrow.style.transform = `rotate(${currentDegree}deg)`;
-      currentDegree += 1;
+      if (arrow) {
+        arrow.style.transform = `rotate(${currentDegree}deg)`;
+        currentDegree += 1;
 
-      if (currentDegree >= degrees) {
+        if (currentDegree >= degrees) {
+          clearInterval(spinnerInterval);
+          return;
+        }
+
+        delay += 0.01; // Decrease the delay
+        delay = Math.max(delay, 1); // Set a minimum delay
+
+        // Update the interval with the new delay
         clearInterval(spinnerInterval);
-        return;
+        spinnerInterval = setInterval(intervalCallback, delay);
       }
-
-      delay += 0.01; // Decrease the delay
-      delay = Math.max(delay, 1); // Set a minimum delay
-
-      // Update the interval with the new delay
-      clearInterval(spinnerInterval);
-      spinnerInterval = setInterval(intervalCallback, delay);
     }
 
     if (arrow) {
@@ -80,12 +82,12 @@ export function Wheel({ item }: Props) {
         <div className="wheel-center">
           {hasInitiatedSpin && (
             <>
-            <div className="absolute w-[340px] h-[340px] rounded-[50%] wheel-circle-arrow flex justify-center items-center">
-              <div className="w-[5px] h-full flex flex-col" id="wheel-arrow">
+              <div className="absolute w-[340px] h-[340px] rounded-[50%] wheel-circle-arrow flex justify-center items-center">
+                <div className="w-[5px] h-full flex flex-col" id="wheel-arrow">
                   <div className=" bg-black w-[5px] flex-grow"></div>
-                <div className="bg-transparent flex-grow"></div>
+                  <div className="bg-transparent flex-grow"></div>
+                </div>
               </div>
-            </div>
               <div className="absolute ">
                 <div className="bg-white h-[70px] w-[70px] rounded-[50%] border flex justify-center items-center">
                   hello
@@ -142,16 +144,16 @@ export function Wheel({ item }: Props) {
         </Button>
       </div>
       <div className="bg-[#F7F7F8] p-10">
-        <Input label="Chance" defaultValue={percentage.toString()} formtter={(value) => (value)+"%" } setter={setPercentage}></Input>
-        <Input label="Price" defaultValue={dealValue} formtter={(value: number) => "$"+(value.toLocaleString()) } setter={(value) => {
-          setPercentage(Math.floor((parseInt(value) / item?.node?.value) * 8))
+        <Input label="Chance" defaultValue={percentage.toString()} formtter={(value) => (value) + "%"} setter={setPercentage}></Input>
+        <Input label="Price" defaultValue={dealValue.toString()} formtter={(value: number) => "$" + (value.toLocaleString())} setter={(value) => {
+          setPercentage(Math.floor(value / item?.node?.value) * 8)
           setDealValue(item?.node?.value * (value / item?.node?.value))
         }}></Input>
         <input type="range" value={percentage} name="" id="" min={20} max={80} className="w-full" onChange={(e) => {
-          setPercentage(e.target.value)
-          setDealValue(item?.node?.value * (e.target.value / 100))
+          setPercentage(parseFloat(e.target.value))
+          setDealValue(item?.node?.value * ((parseFloat(e?.target?.value) || 0) / 100))
         }}
-          />
+        />
       </div>
     </div>
   )
