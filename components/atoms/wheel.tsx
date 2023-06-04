@@ -18,9 +18,7 @@ export function Wheel({ item }: Props) {
 
   useEffect(() => {
     let slider = document.getElementById("rotate");
-    console.log(percentage)
     if (slider) {
-      console.log("We got the slider .... ")
       slider.style.background = `conic-gradient(
         white 0deg ${(100 - percentage) * 1.80}deg, 
         green ${(100 - percentage) * 1.80}deg 180deg, 
@@ -41,12 +39,64 @@ export function Wheel({ item }: Props) {
     }
   }, [luckyNumber, hasInitiatedSpin])
 
+  function isRollingSuccessful(opennessPercentage: number, luckyDegree: number, rotationDegree: number) {
+    // const remainingDegree = 360 * (100 - opennessPercentage) / 100;
+    // const adjustedLuckyDegree = (luckyDegree - rotationDegree + 360) % 360;
+    // return adjustedLuckyDegree <= remainingDegree;
+
+    rotationDegree %= 360;
+
+    // Calculate the start and end degrees of the sliced part based on the openness percentage
+    let startDegree = (360 - opennessPercentage) / 2;
+    let endDegree = startDegree + opennessPercentage;
+
+    // Adjust the start and end degrees based on the disk rotation
+    startDegree = (startDegree + rotationDegree) % 360;
+    endDegree = (endDegree + rotationDegree) % 360;
+
+    // Check if the lucky degree falls within the sliced part
+    if (startDegree <= luckyDegree && luckyDegree <= endDegree) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function isDegreeInSector(degree: number, startAngle: number, endAngle: number) {
+    // Normalize the degree to be within the range [0, 360)
+    degree = (degree + 360) % 360;
+
+    // Normalize the start and end angles to be within the range [0, 360)
+    startAngle = (startAngle + 360) % 360;
+    endAngle = (endAngle + 360) % 360;
+
+    // If the sector is a full circle (360 degrees), return true
+    if (startAngle === endAngle) {
+      return true;
+    }
+
+    // Check if the degree is within the sector
+    if (startAngle < endAngle) {
+      return degree >= startAngle && degree <= endAngle;
+    } else {
+      return degree >= startAngle || degree <= endAngle;
+    }
+  }
+
+  const checkSuccess = () => {
+
+    let rotation = parseFloat(document.getElementById("rotate")?.style?.transform?.replaceAll(/[^0-9.]/ig, '') || "0") % 360;
+    const isDegreeInSector_response = isDegreeInSector(luckyNumber % 360, ((100 - percentage) * 1.80)+rotation, (percentage * 1.80) + 180+rotation)
+
+    alert(isDegreeInSector_response ? "You won!" : "You lost!")
+  }
+
   const rotateSpinner = (luckyNumber: number) => {
     let spinnerInterval: any;
     let arrow = document.getElementById("wheel-arrow");
     let degrees = luckyNumber;
     let currentDegree = 0;
-    let delay = 10; // Starting delay
+    let delay = 1; // Starting delay
 
     const intervalCallback = () => {
       if (arrow) {
@@ -55,6 +105,7 @@ export function Wheel({ item }: Props) {
 
         if (currentDegree >= degrees) {
           clearInterval(spinnerInterval);
+          checkSuccess();
           return;
         }
 
@@ -71,10 +122,6 @@ export function Wheel({ item }: Props) {
       spinnerInterval = setInterval(intervalCallback, delay);
     }
   };
-
-  console.log({
-    item
-  })
 
   return (
     <div className="wheel-container">
@@ -123,7 +170,7 @@ export function Wheel({ item }: Props) {
           Deal for ${(item?.node?.value || 0)?.toLocaleString()}
         </Button>
         <Button disabled={!item} bgColor="blue" width={"40px"} height={"40px"} onClick={() => {
-          let luckyNumber = Math.floor(Math.random() * 10000);
+          let luckyNumber = Math.floor(Math.random() * 1000);
           setHasInitiatedSpin(true)
           setLuckyNumber(luckyNumber)
         }}>
