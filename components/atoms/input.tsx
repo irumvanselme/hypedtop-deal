@@ -8,13 +8,13 @@ type Props = {
   setter?: (value: number) => void
 }
 
-export function Input({ children, label, defaultValue = '', formtter, setter }: Props){
+export function Input({ children, label, defaultValue = '0', formtter, setter }: Props){
   let [actualValue, setActualValue] = useState(defaultValue)
   let [value, setValue] = useState(formtter?.(parseInt(actualValue)) || actualValue)
 
   useEffect(() => {
     setActualValue(defaultValue)
-    setValue(formtter?.(parseInt(defaultValue)) || defaultValue)
+    setValue(formtter?.(parseInt(defaultValue)) || defaultValue || "0")
   }, [defaultValue])
 
   return (

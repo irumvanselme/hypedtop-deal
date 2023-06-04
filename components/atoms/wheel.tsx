@@ -200,7 +200,7 @@ export function Wheel({ item }: Props) {
             <button className="bg-black text-white p-2" onClick={() => setPercentage(80)}>MAX</button>
           </div>
         </Input>
-        <Input label="Price" defaultValue={dealValue.toString()} formtter={(value: number) => "$" + (value.toLocaleString())} setter={(value) => {
+        <Input label="Price" defaultValue={(isNaN(dealValue) ? 0 : dealValue).toString()} formtter={(value: number) => "$" + (value.toLocaleString())} setter={(value) => {
           setPercentage(Math.floor(value / item?.node?.value) * 8)
           setDealValue(item?.node?.value * (value / item?.node?.value))
         }}></Input>
