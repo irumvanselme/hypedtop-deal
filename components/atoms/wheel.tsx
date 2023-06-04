@@ -29,7 +29,7 @@ export function Wheel({ item }: Props) {
 
   useEffect(() => {
     setPercentage(!!item ? 80 : 0)
-    setDealValue(item?.node?.value * percentage / 100)
+    setDealValue((item?.node?.value * percentage )/ 100)
   }, [item])
 
   useEffect(() => {
@@ -167,7 +167,7 @@ export function Wheel({ item }: Props) {
 
       <div className="flex items-center justify-center gap-10 mt-[3em]">
         <Button disabled={!item}>
-          Deal for ${(item?.node?.value || 0)?.toLocaleString()}
+          Deal for ${(dealValue || 0)?.toLocaleString()}
         </Button>
         <Button disabled={!item} bgColor="blue" width={"40px"} height={"40px"} onClick={() => {
           let luckyNumber = Math.floor(Math.random() * 1000);
@@ -191,7 +191,15 @@ export function Wheel({ item }: Props) {
         </Button>
       </div>
       <div className="bg-[#F7F7F8] p-10">
-        <Input label="Chance" defaultValue={percentage.toString()} formtter={(value) => (value) + "%"} setter={setPercentage}></Input>
+        <Input label="Chance" defaultValue={percentage.toString()} formtter={(value) => (value) + "%"} setter={setPercentage}>
+          <div className="flex gap-10">
+            <button className="bg-black text-white p-2" onClick={() => setPercentage(20)}>MIN</button>
+            <button className="bg-black text-white p-2" onClick={() => setPercentage(25)}>25%</button>
+            <button className="bg-black text-white p-2" onClick={() => setPercentage(50)}>50%</button>
+            <button className="bg-black text-white p-2" onClick={() => setPercentage(75)}>75%</button>
+            <button className="bg-black text-white p-2" onClick={() => setPercentage(80)}>MAX</button>
+          </div>
+        </Input>
         <Input label="Price" defaultValue={dealValue.toString()} formtter={(value: number) => "$" + (value.toLocaleString())} setter={(value) => {
           setPercentage(Math.floor(value / item?.node?.value) * 8)
           setDealValue(item?.node?.value * (value / item?.node?.value))
